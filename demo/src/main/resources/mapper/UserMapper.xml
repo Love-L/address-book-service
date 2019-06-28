@@ -1,0 +1,62 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+
+	<resultMap id="phoneResultMap" type="com.example.demo.entity.Phone">
+		<id property="id" column="id"/>
+		<result property="phone_number" column="phone_number" />
+	</resultMap>
+
+	<resultMap id="userResultMap" type="com.example.demo.entity.User">
+		<id property="id" column="id"/>
+		<result property="user_name" column="user_name" />
+		<collection property="phone_list" select="selectPhone_listById" column="id"></collection>
+	</resultMap>
+
+	<select id="selectPhone_listById" parameterType="int"
+	     resultMap="phoneResultMap">
+		 SELECT  pho.id,pho.phone_number
+		 FROM
+		 phone_list pho
+		 WHERE
+		 pho.id=#{id}
+    </select>
+
+	<select id="selectUserAndPhone_listById" parameterType="int"
+			resultMap="userResultMap">
+		 SELECT  use.id,use.user_name
+		 FROM
+		 user use
+		 WHERE
+		 use.id=#{id}
+    </select>
+	<select id="ListUser" resultMap="userResultMap">
+		SELECT * FROM user
+	</select>
+
+	<select id="findUserByName" resultMap="userResultMap">
+		SELECT * FROM user where name=#{user_name}
+	</select>
+
+	<insert id="insertUser" parameterType="com.example.demo.entity.User"
+			keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO user
+		(
+		id,user_name
+		)
+		VALUES (
+		#{id},
+		#{user_name, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		delete from user where user.id=#{id}
+	</delete>
+
+	<update id="Update" parameterType="com.example.demo.entity.User">
+	update user set user.user_name=#{user_name} where user.id=#{id}
+	</update>
+</mapper>
